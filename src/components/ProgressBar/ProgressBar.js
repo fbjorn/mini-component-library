@@ -24,7 +24,7 @@ const ProgressIndicator = styled.div`
   background-color: ${COLORS.primary};
   top: 0;
   left: 0;
-  border-radius: ${p => p.value === 100 ? 'var(--border-radius)' : 'var(--border-radius) 0 0 var(--border-radius)'};
+  border-radius: 4px var(--indicator-right-br) var(--indicator-right-br) 4px;
   height: var(--height);
 `
 
@@ -32,7 +32,6 @@ const ProgressIndicatorLarge = styled(ProgressIndicator)`
   width: ${p => (p.value* 0.975)}%;
   top: 4px;
   left: 4px;
-  border-radius: ${p => p.value === 100 ? '4px' : '4px 0 0 4px'};
   height: 16px;
 `
 
@@ -45,6 +44,7 @@ const Wrapper = styled.div`
 `
 
 const ProgressBar = ({value, size}) => {
+    // validate corner cases
     if (value > 100) {
         value = 100
     } else if (value < 0) {
@@ -53,6 +53,13 @@ const ProgressBar = ({value, size}) => {
 
     const styles = SIZES[size];
     const Indicator = size === "large"? ProgressIndicatorLarge: ProgressIndicator;
+
+    // border radius when the value is close to 100
+    styles['--indicator-right-br'] = 0
+    if (value > 99) {
+        styles['--indicator-right-br'] = `${value * 4 / 100}px`
+    }
+
 
     return (
         <Wrapper style={styles}>
@@ -63,9 +70,7 @@ const ProgressBar = ({value, size}) => {
                 aria-valuemin={0}
                 aria-valuenow={value}
                 aria-valuemax={100}
-            >
-                &nbsp;
-            </Indicator>
+            />
         </Wrapper>
     )
 };

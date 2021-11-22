@@ -1,46 +1,48 @@
 import React from 'react';
 import styled from 'styled-components';
-import { COLORS } from '../../constants';
+import {COLORS} from '../../constants';
 
 
 const SIZES = {
     small: {
-        '--height': '8px',
-        '--border-radius': '4px',
+        height: 8,
+        borderRadius: 4,
+        padding: 0,
     },
     medium: {
-        '--height': '12px',
-        '--border-radius': '4px',
+        height: 12,
+        borderRadius: 4,
+        padding: 0,
     },
     large: {
-        '--height': '24px',
-        '--border-radius': '8px',
+        height: 24,
+        borderRadius: 8,
+        padding: 4,
     },
 }
 
-const ProgressIndicator = styled.div`
-  position: absolute;
-  width: ${p => p.value}%;
-  background-color: ${COLORS.primary};
-  top: 0;
-  left: 0;
-  border-radius: 4px var(--indicator-right-br) var(--indicator-right-br) 4px;
-  height: var(--height);
-`
-
-const ProgressIndicatorLarge = styled(ProgressIndicator)`
-  width: ${p => (p.value* 0.975)}%;
-  top: 4px;
-  left: 4px;
-  height: 16px;
-`
 
 const Wrapper = styled.div`
+  height: var(--height);
+  padding: var(--padding);
   background-color: ${COLORS.transparentGray15};
   border-radius: var(--border-radius);
-  height: var(--height);
-  position: relative;
+  overflow: hidden;
   box-shadow: inset 0 2px 4px ${COLORS.transparentGray35};
+`
+
+
+const ProgressIndicator = styled.div`
+  width: ${p => p.value}%;
+  background-color: ${COLORS.primary};
+  height: 100%;
+`
+
+const ProgressWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--border-radius);
 `
 
 const ProgressBar = ({value, size}) => {
@@ -52,25 +54,28 @@ const ProgressBar = ({value, size}) => {
     }
 
     const styles = SIZES[size];
-    const Indicator = size === "large"? ProgressIndicatorLarge: ProgressIndicator;
-
-    // border radius when the value is close to 100
-    styles['--indicator-right-br'] = 0
-    if (value > 99) {
-        styles['--indicator-right-br'] = `${value * 4 / 100}px`
-    }
-
 
     return (
-        <Wrapper style={styles}>
-            <Indicator
-                value={value}
-                style={styles}
-                role={"progressbar"}
-                aria-valuemin={0}
-                aria-valuenow={value}
-                aria-valuemax={100}
-            />
+        <Wrapper style={{
+            '--border-radius': `${styles.borderRadius}px`,
+            '--padding': `${styles.padding}px`,
+            '--height': `${styles.height}px`,
+        }}>
+            <ProgressWrapper
+                style={{
+                    '--border-radius': '4px',
+                }}>
+                <ProgressIndicator
+                    style={{
+                        '--border-radius': '4px',
+                    }}
+                    value={value}
+                    role={"progressbar"}
+                    aria-valuemin={0}
+                    aria-valuenow={value}
+                    aria-valuemax={100}
+                />
+            </ProgressWrapper>
         </Wrapper>
     )
 };
